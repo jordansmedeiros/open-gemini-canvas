@@ -29,10 +29,12 @@ It includes two agents, exposed through a **Next.js frontend** and a **FastAPI b
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Next.js  
-- **Backend**: FastAPI  
-- **Agents**:  Google Gemini + LangGraph
-- **UI Layer**: CopilotKit
+- **Frontend**: Next.js 15 + TypeScript
+- **Backend**: FastAPI + Python 3.12+
+- **AI Provider**: OpenRouter (acesso a Google Gemini 2.5-pro e outros modelos)
+- **Orquestração**: LangGraph para workflows de agentes
+- **UI Integration**: CopilotKit para interface conversacional
+- **Styling**: Tailwind CSS + Radix UI
 
 
 ## 📌 About

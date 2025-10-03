@@ -60,27 +60,78 @@ This demo illustrates how CopilotKit can be paired with LangGraph and Gemini to 
 Clone this repo `git clone <project URL>`
 
 
-### 2. Environment Configuration
+### 2. Environment Configuration (OpenRouter)
 
-Create a `.env` file in each relevant directory as needed. 
+**🔴 Importante**: Este projeto agora usa OpenRouter em vez da API direta do Google Gemini.
+
+#### Passo 1: Obter Chave API do OpenRouter
+1. Acesse [OpenRouter.ai](https://openrouter.ai/)
+2. Crie uma conta ou faça login
+3. Gere uma chave API nas configurações
+
+#### Passo 2: Configurar Variáveis de Ambiente
+
+Copie os arquivos de exemplo e configure:
+
+```bash
+# Copiar arquivos de exemplo
+cp .env.example .env
+cp agent/.env.example agent/.env
+```
 
 #### Backend (`agent/.env`):
 ```env
-GOOGLE_API_KEY=<<your-gemini-key-here>>
+OPENROUTER_API_KEY=your_openrouter_api_key_here
+OPENROUTER_MODEL=google/gemini-2.5-pro
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+NEXT_PUBLIC_LANGGRAPH_URL=http://localhost:8000/copilotkit
 ```
 
 #### Frontend (`/.env`):
 ```env
-GOOGLE_API_KEY=<<your-gemini-key-here>>
+OPENROUTER_API_KEY=your_openrouter_api_key_here
+OPENROUTER_MODEL=google/gemini-2.5-pro
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+NEXT_PUBLIC_LANGGRAPH_URL=http://localhost:8000/copilotkit
 ```
 
 ---
 
 ### 3. Running the project
 
+#### Instalação Rápida (Recomendado):
 ```bash
+# Instalar dependências do frontend e backend
 pnpm install
+
+# Executar aplicação completa (frontend + backend)
 pnpm dev
+```
+
+#### Instalação Manual do Backend (se necessário):
+```bash
+# Ir para a pasta do backend
+cd agent
+
+# Opção 1: Usando Poetry (se instalado)
+poetry install
+poetry run python main.py
+
+# Opção 2: Usando script de setup
+# Windows
+.\..\scripts\setup-openrouter.bat
+
+# Linux/Mac
+sh ../scripts/setup-openrouter.sh
+```
+
+#### Execução Separada:
+```bash
+# Frontend apenas (porta 3000)
+pnpm dev:ui
+
+# Backend apenas (porta 8000)
+pnpm dev:agent
 ```
 
 ---
@@ -89,9 +140,32 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 
 ---
 
-## Notes
-- Ensure the backend agent is running before using the frontend.
-- Update environment variables as needed for your deployment.
+## 📝 Notes
+
+- **OpenRouter Setup**: Este projeto agora usa OpenRouter para maior flexibilidade
+- **Backend First**: Certifique-se de que o backend está rodando antes de usar o frontend
+- **Modelos Disponíveis**: Além do Gemini, você pode usar GPT-4, Claude, e outros modelos
+- **Monitoramento**: Use o dashboard do OpenRouter para acompanhar uso e custos
+
+## 🔧 Troubleshooting
+
+### Erro de Autenticação
+Se receber erro de API key:
+1. Verifique se `OPENROUTER_API_KEY` está configurado corretamente
+2. Confirme que a chave é válida no dashboard do OpenRouter
+
+### Problemas de Depências
+Se houver problemas com instalação:
+1. Use os scripts em `./scripts/setup-openrouter.*`
+2. Verifique se Python 3.12+ está instalado
+3. Consulte [OPENROUTER_SETUP.md](./OPENROUTER_SETUP.md) para guia detalhado
+
+## 📚 Documentação Adicional
+
+- **[Guia Completo OpenRouter](./OPENROUTER_SETUP.md)** - Instruções detalhadas de migração
+- **[OpenRouter Docs](https://openrouter.ai/docs)** - Documentação oficial
+- **[CopilotKit Docs](https://docs.copilotkit.ai/)** - Integração de interface
+- **[LangGraph Docs](https://python.langchain.com/docs/langgraph/)** - Orquestração de agentes
 
 ---
 

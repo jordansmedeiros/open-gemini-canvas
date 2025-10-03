@@ -3,7 +3,8 @@
     "allow": [
       "Bash(where python)",
       "Bash(test:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

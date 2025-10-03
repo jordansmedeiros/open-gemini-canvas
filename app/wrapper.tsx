@@ -8,7 +8,10 @@ export default function Wrapper({ children }: { children: React.ReactNode }) {
   console.log('CopilotKit Wrapper - Agent atual:', layoutState.agent)
   
   return (
-    <CopilotKit runtimeUrl="/api/copilotkit" agent={layoutState.agent}>
+    <CopilotKit
+      runtimeUrl="/api/copilotkit"
+      agent={layoutState.agent}
+    >
       {children}
     </CopilotKit>
   )

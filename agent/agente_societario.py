@@ -452,11 +452,21 @@ async def societario_analyzer_node(state: SocietarioAgentState, config: Runnable
         emit_tool_calls=True,
     )
     
-    state.tool_logs.append({
-        "id": str(uuid.uuid4()),
-        "message": "Analisando demanda societária",
-        "status": "processing",
-        "timestamp": datetime.now().isoformat()
+    if isinstance(state, dict):
+        if "tool_logs" not in state:
+            state["tool_logs"] = []
+        state["tool_logs"].append({
+            "id": str(uuid.uuid4()),
+            "message": "Analisando demanda societária",
+            "status": "processing",
+            "timestamp": datetime.now().isoformat()
+        })
+    else:
+        state.tool_logs.append({
+            "id": str(uuid.uuid4()),
+            "message": "Analisando demanda societária",
+            "status": "processing",
+            "timestamp": datetime.now().isoformat()
     })
     await copilotkit_emit_state(config, state)
     

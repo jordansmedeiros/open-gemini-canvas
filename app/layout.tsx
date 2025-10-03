@@ -21,13 +21,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <LayoutProvider>
-        <Wrapper>
-          <body className={inter.className}>
+      <body className={inter.className}>
+        <LayoutProvider>
+          <Wrapper>
             {children}
-          </body>
-        </Wrapper>
-      </LayoutProvider>
+          </Wrapper>
+        </LayoutProvider>
+      </body>
     </html>
   )
 }

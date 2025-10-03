@@ -2,25 +2,22 @@
 
 import { useEffect, useState } from "react"
 import { Badge } from "@/components/ui/badge"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { CopilotChat, useCopilotChatSuggestions } from "@copilotkit/react-ui"
-import "@copilotkit/react-ui/styles.css";
 import { TextMessage, Role } from "@copilotkit/runtime-client-gql";
 import {
   Search,
   Sparkles,
   FileText,
-  Twitter,
+  Scale,
   TrendingUp,
   Send,
-  User,
-  ExternalLink,
-  Globe,
   Brain,
-  Zap,
   Star,
   ChevronDown,
   Check,
+  Building,
+  Calculator,
+  FileText,
 } from "lucide-react"
 import { useCoAgent, useCoAgentStateRender, useCopilotAction, useCopilotChat } from "@copilotkit/react-core"
 import { ToolLogs } from "@/components/ui/tool-logs"
@@ -31,13 +28,12 @@ import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { useLayout } from "../contexts/LayoutContext"
 
-
 const agents = [
   {
     id: "master_legal_agent",
     name: "Master Legal Agent",
     description: "Coordena consultas jurídicas complexas entre especialistas",
-    icon: Search,
+    icon: Scale,
     gradient: "from-blue-500 to-purple-600",
     active: true,
   },
@@ -45,7 +41,7 @@ const agents = [
     id: "societario_specialist",
     name: "Societário Specialist",
     description: "Especialista em estruturação societária e holdings",
-    icon: FileText,
+    icon: Building,
     gradient: "from-green-500 to-teal-600",
     active: false,
   },
@@ -53,7 +49,7 @@ const agents = [
     id: "tributario_specialist",
     name: "Tributário Specialist",
     description: "Especialista em planejamento tributário e defesas fiscais",
-    icon: TrendingUp,
+    icon: Calculator,
     gradient: "from-orange-500 to-red-600",
     active: false,
   },
@@ -61,17 +57,17 @@ const agents = [
     id: "contratos_specialist",
     name: "Contratos Specialist",
     description: "Especialista em contratos empresariais e M&A",
-    icon: Twitter,
+    icon: FileText,
     gradient: "from-purple-500 to-pink-600",
     active: false,
   }
 ]
 
 const quickActions = [
-  { label: "Consulta Societária", icon: Search, color: "text-blue-600", prompt: "Preciso de ajuda para estruturar uma holding patrimonial" },
-  { label: "Planejamento Fiscal", icon: FileText, color: "text-green-600", prompt: "Como posso reduzir a carga tributária da minha empresa?" },
-  { label: "Contrato Comercial", icon: Twitter, color: "text-purple-600", prompt: "Preciso elaborar um contrato de prestação de serviços" },
-  { label: "Due Diligence", icon: TrendingUp, color: "text-orange-600", prompt: "Estou avaliando a aquisição de uma empresa e preciso de due diligence" },
+  { label: "Consulta Societária", icon: Building, color: "text-blue-600", prompt: "Preciso de ajuda para estruturar uma holding patrimonial" },
+  { label: "Planejamento Fiscal", icon: Calculator, color: "text-green-600", prompt: "Como posso reduzir a carga tributária da minha empresa?" },
+  { label: "Contrato Comercial", icon: FileText, color: "text-purple-600", prompt: "Preciso elaborar um contrato de prestação de serviços" },
+  { label: "Due Diligence", icon: Search, color: "text-orange-600", prompt: "Estou avaliando a aquisição de uma empresa e preciso de due diligence" },
 ]
 
 interface LegalResponseInterface {
@@ -86,7 +82,6 @@ interface LegalResponseInterface {
   }[]
 }
 
-
 export default function PostGenerator() {
   const router = useRouter()
   const { updateLayout } = useLayout()
@@ -98,6 +93,7 @@ export default function PostGenerator() {
   })
   const [isAgentActive, setIsAgentActive] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
   const { setState, running } = useCoAgent({
     name: "master_legal_agent",
     initialState: {
@@ -107,8 +103,6 @@ export default function PostGenerator() {
 
   const { appendMessage } = useCopilotChat()
 
-
-  // Handle clicking outside dropdown to close it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element
@@ -126,7 +120,6 @@ export default function PostGenerator() {
     }
   }, [isDropdownOpen])
 
-
   useCoAgentStateRender({
     name: "master_legal_agent",
     render: (state) => {
@@ -135,62 +128,81 @@ export default function PostGenerator() {
   })
 
   useCopilotAction({
-    name: "generate_post",
-    description: "Render a post",
+    name: "legal_response",
+    description: "Render a legal response",
     parameters: [
       {
-        name: "tweet",
+        name: "parecer",
         type: "object",
-        description: "The tweet to be rendered",
+        description: "O parecer jurídico",
         attributes: [
           {
-            name: "title",
+            name: "area",
             type: "string",
-            description: "The title of the post"
+            description: "A área jurídica do parecer"
           },
           {
-            name: "content",
+            name: "resumo",
             type: "string",
-            description: "The content of the post"
+            description: "Resumo do parecer"
+          },
+          {
+            name: "recomendacoes",
+            type: "array",
+            description: "Lista de recomendações"
           }
         ]
       },
       {
-        name: "linkedIn",
-        type: "object",
-        description: "The linkedIn post to be rendered",
+        name: "documentos",
+        type: "array",
+        description: "Documentos recomendados",
         attributes: [
           {
-            name: "title",
+            name: "tipo",
             type: "string",
-            description: "The title of the post"
+            description: "Tipo do documento"
           },
           {
-            name: "content",
+            name: "descricao",
             type: "string",
-            description: "The content of the post"
+            description: "Descrição do documento"
           }
         ]
       }
     ],
     render: ({ args }) => {
-      useEffect(() => {
-        console.log("Rendering posts with args:", args)
-        // console.log(posts.linkedIn.content == '')
-      }, [args])
-      return <>
-        {args.tweet?.content != '' && <div className="px-2 mb-3">
-          <XPostCompact title={args.tweet?.title || ""} content={args.tweet?.content || ""} />
-        </div>}
-        {args.linkedIn?.content != '' && <div className="px-2">
-          <LinkedInPostCompact title={args.linkedIn?.title || ""} content={args.linkedIn?.content || ""} />
-        </div>}
-      </>
+      return (
+        <div className="px-2 mb-3">
+          <div className="bg-white rounded-xl border p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Parecer Jurídico</h3>
+            <div className="space-y-4">
+              <div>
+                <span className="text-sm font-medium text-gray-500">Área:</span>
+                <p className="text-gray-900">{args.parecer?.area}</p>
+              </div>
+              <div>
+                <span className="text-sm font-medium text-gray-500">Resumo:</span>
+                <p className="text-gray-900">{args.parecer?.resumo}</p>
+              </div>
+              {args.parecer?.recomendacoes && args.parecer.recomendacoes.length > 0 && (
+                <div>
+                  <span className="text-sm font-medium text-gray-500">Recomendações:</span>
+                  <ul className="list-disc list-inside space-y-1 text-gray-900">
+                    {args.parecer.recomendacoes.map((rec, idx) => (
+                      <li key={idx}>{rec}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )
     },
     handler: (args) => {
-      console.log(args, "args")
-      setShowColumns(true)
-      setPosts({ tweet: args.tweet, linkedIn: args.linkedIn })
+      setShowResponse(true)
+      setLegalResponse({ parecer: args.parecer, documentos: args.documentos || [] })
       setState((prevState) => ({
         ...prevState,
         tool_logs: []
@@ -203,7 +215,6 @@ export default function PostGenerator() {
     instructions: suggestionPrompt,
   })
 
-
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 overflow-hidden">
       {/* Sidebar */}
@@ -213,7 +224,7 @@ export default function PostGenerator() {
           <div className="flex items-center gap-3 mb-4">
             <div className="relative">
               <div className="w-10 h-10 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Brain className="w-6 h-6 text-white" />
+                <Scale className="w-6 h-6 text-white" />
               </div>
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
                 <Star className="w-2 h-2 text-white" />
@@ -229,11 +240,11 @@ export default function PostGenerator() {
 
           {/* Enhanced Agent Selector */}
           <div className="space-y-3">
-            <label className="text-sm font-semibold text-gray-700">Active Agent</label>
+            <label className="text-sm font-semibold text-gray-700">Agente Ativo</label>
             <div className="relative dropdown-container">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="w-full p-4 pr-8 border border-gray-200/50 rounded-xl bg-white/50 backdrop-blur-sm text-sm  transition-all duration-300 shadow-sm hover:shadow-md hover:bg-white/70 flex items-center justify-between group"
+                className="w-full p-4 pr-8 border border-gray-200/50 rounded-xl bg-white/50 backdrop-blur-sm text-sm transition-all duration-300 shadow-sm hover:shadow-md hover:bg-white/70 flex items-center justify-between group"
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-6 h-6 bg-gradient-to-r ${selectedAgent.gradient} rounded-lg flex items-center justify-center shadow-sm`}>
@@ -262,19 +273,13 @@ export default function PostGenerator() {
                       key={agent.id}
                       onClick={() => {
                         if (selectedAgent.id != agent.id) {
-                            updateLayout({ agent: agent.id })
-                            // Resetar estado do agente ao trocar
-                            setState({
-                              tool_logs: []
-                            })
-                            // Navegar para a página apropriada baseada no agente
-                            if (agent.id === 'societario_specialist') {
-                              router.push(`/stack-analyzer`)
-                            } else if (agent.id === 'tributario_specialist') {
-                              router.push(`/stack-analyzer`)
-                            } else if (agent.id === 'contratos_specialist') {
-                              router.push(`/stack-analyzer`)
-                            }
+                          updateLayout({ agent: agent.id })
+                          setState({
+                            tool_logs: []
+                          })
+                          if (agent.id !== 'master_legal_agent') {
+                            router.push('/stack-analyzer')
+                          }
                         }
                         setIsDropdownOpen(false)
                       }}
@@ -300,10 +305,7 @@ export default function PostGenerator() {
           </div>
         </div>
 
-
         <div className="flex-1 overflow-auto">
-
-          {/* Chat Input at Bottom */}
           <CopilotChat className="h-full p-2" labels={{
             initial: initialPrompt
           }}
@@ -316,7 +318,7 @@ export default function PostGenerator() {
                 }
               }, [inProgress])
               const [input, setInput] = useState("")
-              return (<>
+              return (
                 <div className="space-y-3">
                   <form className="flex flex-col gap-3">
                     <Textarea
@@ -330,28 +332,28 @@ export default function PostGenerator() {
                         }
                       }}
                       onChange={(e) => setInput(e.target.value)}
-                      placeholder="Type your message..."
+                      placeholder="Digite sua consulta jurídica..."
                       className="min-h-[80px] resize-none rounded-xl border-muted-foreground/20 p-3"
                     />
-                    <Button disabled={inProgress}
-                      
+                    <Button 
+                      disabled={inProgress}
                       onClick={(e) => {
                         e.preventDefault()
                         if (input.trim() === "") return
-                        console.log("sending message")
                         onSend(input)
                         setInput("")
-                      }} className="self-end rounded-xl px-5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white">
+                      }} 
+                      className="self-end rounded-xl px-5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white"
+                    >
                       <Send className="mr-2 h-4 w-4" />
-                      Send
+                      Enviar
                     </Button>
                   </form>
                 </div>
-              </>)
+              )
             }}
           />
         </div>
-
       </div>
 
       {/* Main Content */}
@@ -373,66 +375,48 @@ export default function PostGenerator() {
             <div className="flex items-center gap-3">
               {isAgentActive && <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 shadow-sm">
                 <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
-                Live Research
+                Consultando
               </Badge>}
-              {/* <div className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
-                <Zap className="w-4 h-4 text-white" />
-              </div> */}
             </div>
           </div>
         </div>
 
         {/* Main Canvas */}
         <div className="flex-1 p-6 overflow-y-auto">
-          {showColumns ? (
-            <div className="flex gap-6 min-h-full">
-              {/* LinkedIn Column - 75% */}
-              {posts.linkedIn.content != '' && <div className="w-[75%] h-full">
-                <LinkedInPostPreview title={posts.linkedIn.title || ""} content={posts.linkedIn.content || ""} />
-              </div>}
-
-              {/* X Post Column - 25% */}
-              {posts.tweet.content != '' && <div className="w-[25%] h-full">
-                <XPostPreview title={posts.tweet.title || ""} content={posts.tweet.content || ""} />
-              </div>}
-            </div>
-          ) : (
-            <div className="text-center py-16">
-              <div className="relative mb-8">
-                <div className="w-20 h-20 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto shadow-2xl">
-                  <Brain className="w-10 h-10 text-white" />
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent mb-3">
-                Pronto para Consulta
-              </h3>
-              <p className="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
-                Sistema jurídico avançado com agentes especializados em diversas áreas do direito empresarial.
-              </p>
-              <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto">
-                {quickActions.slice(0, 4).map((action, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    disabled={running}
-
-                    className="h-auto p-6 flex flex-col items-center gap-3 bg-white/50 backdrop-blur-sm border-gray-200/50 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-xl transition-all duration-300 group"
-                    onClick={() => appendMessage(new TextMessage({
-                      role: Role.User,
-                      content: action.prompt
-                    }))}
-                  >
-                    <action.icon
-                      className={`w-6 h-6 ${action.color} group-hover:scale-110 transition-transform duration-200`}
-                    />
-                    <span className="text-sm font-medium">{action.label}</span>
-                  </Button>
-                ))}
+          <div className="text-center py-16">
+            <div className="relative mb-8">
+              <div className="w-20 h-20 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto shadow-2xl">
+                <Scale className="w-10 h-10 text-white" />
               </div>
             </div>
-          )}
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent mb-3">
+              Pronto para Consulta
+            </h3>
+            <p className="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
+              Sistema jurídico avançado com agentes especializados em diversas áreas do direito empresarial.
+            </p>
+            <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto">
+              {quickActions.slice(0, 4).map((action, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  disabled={running}
+                  className="h-auto p-6 flex flex-col items-center gap-3 bg-white/50 backdrop-blur-sm border-gray-200/50 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-xl transition-all duration-300 group"
+                  onClick={() => appendMessage(new TextMessage({
+                    role: Role.User,
+                    content: action.prompt
+                  }))}
+                >
+                  <action.icon
+                    className={`w-6 h-6 ${action.color} group-hover:scale-110 transition-transform duration-200`}
+                  />
+                  <span className="text-sm font-medium">{action.label}</span>
+                </Button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
-    </div >
+    </div>
   )
 }

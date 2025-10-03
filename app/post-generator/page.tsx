@@ -24,8 +24,6 @@ import {
 } from "lucide-react"
 import { useCoAgent, useCoAgentStateRender, useCopilotAction, useCopilotChat } from "@copilotkit/react-core"
 import { ToolLogs } from "@/components/ui/tool-logs"
-import { XPost, XPostPreview, XPostCompact } from "@/components/ui/x-post"
-import { LinkedInPost, LinkedInPostPreview, LinkedInPostCompact } from "@/components/ui/linkedin-post"
 import { Button } from "@/components/ui/button"
 import { initialPrompt, suggestionPrompt } from "../prompts/prompts"
 import { Textarea } from "@/components/ui/textarea"
@@ -36,39 +34,56 @@ import { useLayout } from "../contexts/LayoutContext"
 
 const agents = [
   {
-    id: "post_generation_agent",
-    name: "Post Generator",
-    description: "Generate posts for Linkedin and X with Gemini and Google web search",
+    id: "master_legal_agent",
+    name: "Master Legal Agent",
+    description: "Coordena consultas jurídicas complexas entre especialistas",
     icon: Search,
     gradient: "from-blue-500 to-purple-600",
     active: true,
   },
   {
-    id: "stack_analysis_agent",
-    name: "Stack Analyst",
-    description: "Analyze the stack of a Project and generate insights from it",
+    id: "societario_specialist",
+    name: "Societário Specialist",
+    description: "Especialista em estruturação societária e holdings",
     icon: FileText,
     gradient: "from-green-500 to-teal-600",
+    active: false,
+  },
+  {
+    id: "tributario_specialist",
+    name: "Tributário Specialist",
+    description: "Especialista em planejamento tributário e defesas fiscais",
+    icon: TrendingUp,
+    gradient: "from-orange-500 to-red-600",
+    active: false,
+  },
+  {
+    id: "contratos_specialist",
+    name: "Contratos Specialist",
+    description: "Especialista em contratos empresariais e M&A",
+    icon: Twitter,
+    gradient: "from-purple-500 to-pink-600",
     active: false,
   }
 ]
 
 const quickActions = [
-  { label: "Recent Research", icon: Search, color: "text-blue-600", prompt: "Generate a post about recent research on String Theory" },
-  { label: "Recent News", icon: FileText, color: "text-green-600", prompt: "Generate a post about recent news in United States" },
-  { label: "Post about Social Media", icon: Twitter, color: "text-purple-600", prompt: "Generate a post about Instagram" },
-  { label: "Post about Stocks", icon: TrendingUp, color: "text-orange-600", prompt: "Generate a post about Nvidia" },
+  { label: "Consulta Societária", icon: Search, color: "text-blue-600", prompt: "Preciso de ajuda para estruturar uma holding patrimonial" },
+  { label: "Planejamento Fiscal", icon: FileText, color: "text-green-600", prompt: "Como posso reduzir a carga tributária da minha empresa?" },
+  { label: "Contrato Comercial", icon: Twitter, color: "text-purple-600", prompt: "Preciso elaborar um contrato de prestação de serviços" },
+  { label: "Due Diligence", icon: TrendingUp, color: "text-orange-600", prompt: "Estou avaliando a aquisição de uma empresa e preciso de due diligence" },
 ]
 
-interface PostInterface {
-  tweet: {
-    title: string
-    content: string
+interface LegalResponseInterface {
+  parecer: {
+    area: string
+    resumo: string
+    recomendacoes: string[]
   }
-  linkedIn: {
-    title: string
-    content: string
-  }
+  documentos: {
+    tipo: string
+    descricao: string
+  }[]
 }
 
 
@@ -76,18 +91,21 @@ export default function PostGenerator() {
   const router = useRouter()
   const { updateLayout } = useLayout()
   const [selectedAgent, setSelectedAgent] = useState(agents[0])
-  const [showColumns, setShowColumns] = useState(false)
-  const [posts, setPosts] = useState<PostInterface>({ tweet: { title: "", content: "" }, linkedIn: { title: "", content: "" } })
+  const [showResponse, setShowResponse] = useState(false)
+  const [legalResponse, setLegalResponse] = useState<LegalResponseInterface>({
+    parecer: { area: "", resumo: "", recomendacoes: [] },
+    documentos: []
+  })
   const [isAgentActive, setIsAgentActive] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const { setState, running } = useCoAgent({
-    name: "post_generation_agent",
+    name: "master_legal_agent",
     initialState: {
       tool_logs: []
     }
   })
 
-  const { appendMessage, setMessages } = useCopilotChat()
+  const { appendMessage } = useCopilotChat()
 
 
   // Handle clicking outside dropdown to close it
@@ -110,7 +128,7 @@ export default function PostGenerator() {
 
 
   useCoAgentStateRender({
-    name: "post_generation_agent",
+    name: "master_legal_agent",
     render: (state) => {
       return <ToolLogs logs={state?.state?.tool_logs || []} />
     }
@@ -203,9 +221,9 @@ export default function PostGenerator() {
             </div>
             <div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Open Gemini Canvas
+                Vieira Pires Advogados
               </h1>
-              <p className="text-sm text-gray-600">Advanced AI Canvas</p>
+              <p className="text-sm text-gray-600">Sistema Jurídico Multi-Agente</p>
             </div>
           </div>
 
@@ -245,8 +263,18 @@ export default function PostGenerator() {
                       onClick={() => {
                         if (selectedAgent.id != agent.id) {
                             updateLayout({ agent: agent.id })
-                            setMessages([])
-                            router.push(`/stack-analyzer`)
+                            // Resetar estado do agente ao trocar
+                            setState({
+                              tool_logs: []
+                            })
+                            // Navegar para a página apropriada baseada no agente
+                            if (agent.id === 'societario_specialist') {
+                              router.push(`/stack-analyzer`)
+                            } else if (agent.id === 'tributario_specialist') {
+                              router.push(`/stack-analyzer`)
+                            } else if (agent.id === 'contratos_specialist') {
+                              router.push(`/stack-analyzer`)
+                            }
                         }
                         setIsDropdownOpen(false)
                       }}
@@ -337,9 +365,9 @@ export default function PostGenerator() {
               </div>
               <div>
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent">
-                  Posts Generation Canvas
+                  Consulta Jurídica Master
                 </h2>
-                <p className="text-sm text-gray-600">Powered by Gemini AI & Google Web Search</p>
+                <p className="text-sm text-gray-600">Powered by Gemini AI & Sistema Multi-Agente</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -376,10 +404,10 @@ export default function PostGenerator() {
                 </div>
               </div>
               <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent mb-3">
-                Ready to Explore
+                Pronto para Consulta
               </h3>
               <p className="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
-                Harness the power of Google's most advanced AI models for generating interactive LinkedIn and X Posts.
+                Sistema jurídico avançado com agentes especializados em diversas áreas do direito empresarial.
               </p>
               <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto">
                 {quickActions.slice(0, 4).map((action, index) => (

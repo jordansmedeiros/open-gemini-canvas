@@ -1,24 +1,19 @@
-export const initialPrompt = 'Hi! I am a Langgraph x Gemini powered AI agent capable of performing web search and generating LinkedIn and X (Twitter) posts.\n\n Click on the suggestions to get started.'
+export const initialPrompt = 'Olá! Sou um agente de IA jurídico do Vieira Pires Advogados, especializado em direito empresarial, societário, tributário e contratos. Posso ajudar com consultas jurídicas, estruturação societária, planejamento fiscal e elaboração de contratos.\n\nClique nas sugestões para começar.'
 
-export const initialPrompt1 = 'Hi! I am a Langgraph x Gemini powered AI agent capable of performing analysis of Public GitHub Repositories.\n\n Click on the suggestions to get started.'
+export const initialPrompt1 = 'Olá! Sou um agente especializado em análise de documentos jurídicos e estruturas societárias. Posso analisar contratos, estatutos sociais e outros documentos empresariais.\n\nClique nas sugestões para começar.'
 
-export const suggestionPrompt = 'Generate suggestions that revolve around the creation/generation of LinkedIn and X (Twitter) posts on any specific topics.'
+export const suggestionPrompt = 'Gere sugestões relacionadas a consultas jurídicas empresariais, como estruturação societária, planejamento tributário, elaboração de contratos e questões de compliance.'
 
-export const suggestionPrompt1 = `Generate suggestions that revolve around the analyzation of Public GitHub Repositories. Only provide suggestions from these public URLs:
+export const suggestionPrompt1 = `Gere sugestões relacionadas à análise de documentos jurídicos empresariais, tais como:
 [
-  "https://github.com/freeCodeCamp/freeCodeCamp",
-  "https://github.com/EbookFoundation/free-programming-books",
-  "https://github.com/jwasham/coding-interview-university",
-  "https://github.com/kamranahmedse/developer-roadmap",
-  "https://github.com/public-apis/public-apis",
-  "https://github.com/donnemartin/system-design-primer",
-  "https://github.com/facebook/react",
-  "https://github.com/tensorflow/tensorflow",
-  "https://github.com/trekhleb/javascript-algorithms",
-  "https://github.com/twbs/bootstrap",
-  "https://github.com/vinta/awesome-python",
-  "https://github.com/ohmyzsh/ohmyzsh",
-  "https://github.com/tldr-pages/tldr",
-  "https://github.com/ytdl-org/youtube-dl",
-  "https://github.com/taigaio/taiga-back"
+  "Análise de contrato social",
+  "Revisão de acordo de sócios",
+  "Avaliação de estrutura de holding",
+  "Análise de contrato de prestação de serviços",
+  "Revisão de acordo de confidencialidade",
+  "Avaliação de cláusulas contratuais",
+  "Análise de compliance tributário",
+  "Revisão de estrutura societária",
+  "Avaliação de due diligence",
+  "Análise de contratos de M&A"
 ]`

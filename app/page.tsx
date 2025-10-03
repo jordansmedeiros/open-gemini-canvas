@@ -8,7 +8,7 @@ export default function GoogleDeepMindChatUI() {
   const router = useRouter();
   const { updateLayout } = useLayout();
   useEffect(() => {
-    updateLayout({ agent: "post_generation_agent" });
+    updateLayout({ agent: "master_legal_agent" });
     router.push("/post-generator");
   }, [router]);
 

@@ -9,7 +9,7 @@ export default function GoogleDeepMindChatUI() {
   const { updateLayout } = useLayout();
   useEffect(() => {
     updateLayout({ agent: "master_legal_agent" });
-    router.push("/post-generator");
+    router.push("/legal-master");
   }, [router]);
 
   return (

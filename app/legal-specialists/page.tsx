@@ -127,7 +127,7 @@ export default function StackAnalyzer() {
                 description: "Recomendações jurídicas"
             }
         ],
-        render: ({ args }: any) => {
+        render: ({ args }: { args: any }) => {
             return (
                 <div className="bg-white rounded-xl border p-6 shadow-sm m-2">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Análise Jurídica - {args.area}</h3>
@@ -229,7 +229,7 @@ export default function StackAnalyzer() {
                                                         analysis_result: ""
                                                     })
                                                     if (agent.id === 'master_legal_agent') {
-                                                        router.push('/post-generator')
+                                                        router.push('/legal-master')
                                                     }
                                                     setSelectedAgent(agent)
                                                 }

@@ -17,7 +17,6 @@ import {
   Check,
   Building,
   Calculator,
-  FileText,
 } from "lucide-react"
 import { useCoAgent, useCoAgentStateRender, useCopilotAction, useCopilotChat } from "@copilotkit/react-core"
 import { ToolLogs } from "@/components/ui/tool-logs"
@@ -148,14 +147,14 @@ export default function PostGenerator() {
           },
           {
             name: "recomendacoes",
-            type: "array",
+            type: "object",
             description: "Lista de recomendações"
           }
         ]
       },
       {
         name: "documentos",
-        type: "array",
+        type: "object",
         description: "Documentos recomendados",
         attributes: [
           {
@@ -171,7 +170,7 @@ export default function PostGenerator() {
         ]
       }
     ],
-    render: ({ args }) => {
+    render: ({ args }: any) => {
       return (
         <div className="px-2 mb-3">
           <div className="bg-white rounded-xl border p-6 shadow-sm">
@@ -189,7 +188,7 @@ export default function PostGenerator() {
                 <div>
                   <span className="text-sm font-medium text-gray-500">Recomendações:</span>
                   <ul className="list-disc list-inside space-y-1 text-gray-900">
-                    {args.parecer.recomendacoes.map((rec, idx) => (
+                    {(args.parecer?.recomendacoes || []).map((rec: string, idx: number) => (
                       <li key={idx}>{rec}</li>
                     ))}
                   </ul>
@@ -200,9 +199,9 @@ export default function PostGenerator() {
         </div>
       )
     },
-    handler: (args) => {
+    handler: (args: any) => {
       setShowResponse(true)
-      setLegalResponse({ parecer: args.parecer, documentos: args.documentos || [] })
+      setLegalResponse({ parecer: args.parecer || {}, documentos: args.documentos || [] })
       setState((prevState) => ({
         ...prevState,
         tool_logs: []
@@ -278,7 +277,7 @@ export default function PostGenerator() {
                             tool_logs: []
                           })
                           if (agent.id !== 'master_legal_agent') {
-                            router.push('/stack-analyzer')
+                            router.push('/legal-specialists')
                           }
                         }
                         setIsDropdownOpen(false)

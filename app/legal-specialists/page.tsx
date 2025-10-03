@@ -73,14 +73,21 @@ export default function StackAnalyzer() {
     const [isAgentActive, setIsAgentActive] = useState(false)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const { updateLayout } = useLayout()
-    const { setState, running, state } = useCoAgent({
-        name: "societario_specialist",
-        initialState: {
-            tool_logs: [],
-            show_analysis: false,
-            analysis_result: ""
-        }
+    const [state, setStateInternal] = useState<any>({
+        tool_logs: [],
+        show_analysis: false,
+        analysis_result: ""
     })
+
+    const setState = (newState: any) => {
+        if (typeof newState === 'function') {
+            setStateInternal(newState)
+        } else {
+            setStateInternal(newState)
+        }
+    }
+
+    const running = false
     const { appendMessage } = useCopilotChat()
 
     useEffect(() => {
@@ -100,12 +107,12 @@ export default function StackAnalyzer() {
         }
     }, [isDropdownOpen])
 
-    useCoAgentStateRender({
-        name: "societario_specialist",
-        render: (state) => {
-            return <ToolLogs logs={state?.state?.tool_logs || []} />
-        }
-    })
+    // useCoAgentStateRender({
+    //     name: "societario_specialist",
+    //     render: (state) => {
+    //         return <ToolLogs logs={state?.state?.tool_logs || []} />
+    //     }
+    // })
 
     useCopilotAction({
         name: "legal_analysis",

@@ -507,7 +507,11 @@ async def societario_analyzer_node(state: SocietarioAgentState, config: Runnable
     SEMPRE cite a legislação aplicável e identifique riscos/oportunidades.
     """
     
-    last_message = state.messages[-1].content if state.messages else "Inicializar análise societária"
+    if isinstance(state, dict):
+        messages_list = state.get("messages", [])
+        last_message = messages_list[-1].content if messages_list else "Inicializar análise societária"
+    else:
+        last_message = state.messages[-1].content if state.messages else "Inicializar análise societária"
     
     messages = [
         SystemMessage(content=system_prompt),

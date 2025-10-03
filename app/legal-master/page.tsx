@@ -93,12 +93,19 @@ export default function PostGenerator() {
   const [isAgentActive, setIsAgentActive] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
-  const { setState, running } = useCoAgent({
-    name: "master_legal_agent",
-    initialState: {
-      tool_logs: []
-    }
+  const [state, setStateInternal] = useState<any>({
+    tool_logs: []
   })
+
+  const setState = (newState: any) => {
+    if (typeof newState === 'function') {
+      setStateInternal(newState)
+    } else {
+      setStateInternal(newState)
+    }
+  }
+
+  const running = false
 
   const { appendMessage } = useCopilotChat()
 
@@ -119,12 +126,12 @@ export default function PostGenerator() {
     }
   }, [isDropdownOpen])
 
-  useCoAgentStateRender({
-    name: "master_legal_agent",
-    render: (state) => {
-      return <ToolLogs logs={state?.state?.tool_logs || []} />
-    }
-  })
+  // useCoAgentStateRender({
+  //   name: "master_legal_agent",
+  //   render: (state) => {
+  //     return <ToolLogs logs={state?.state?.tool_logs || []} />
+  //   }
+  // })
 
   useCopilotAction({
     name: "legal_response",

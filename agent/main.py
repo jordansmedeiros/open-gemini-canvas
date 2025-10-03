@@ -41,6 +41,11 @@ sdk = CopilotKitSDK(
             graph=societario_agent_graph,
         ),
         LangGraphAgent(
+            name="tributario_specialist",
+            description="Especialista em planejamento tributário, defesas fiscais e reforma tributária",
+            graph=tributario_agent_graph,
+        ),
+        LangGraphAgent(
             name="contratos_specialist",
             description="Especialista em contratos empresariais, due diligence, M&A e acordos comerciais complexos",
             graph=contratos_agent_graph,
@@ -68,6 +73,8 @@ def health():
         "status": "ok", 
         "system": "Vieira Pires Legal Multi-Agent System",
         "agents_available": 6,
+        "openrouter_configured": bool(os.getenv("OPENROUTER_API_KEY")),
+        "model": os.getenv("OPENROUTER_MODEL", "google/gemini-2.5-pro"),
         "specialties": ["Societário", "Tributário", "Contratos", "Trabalhista", "Franquias"]
     }
 
@@ -86,6 +93,7 @@ def root():
         "agents": [
             "Master Legal Agent - Coordenação Geral",
             "Societário Specialist - Holdings & Estruturação", 
+            "Tributário Specialist - Planejamento Fiscal",
             "Contratos Specialist - Acordos Empresariais",
             "Supervisor Coordinator - Workflows",
             "Handoff Manager - Transferências"
@@ -108,6 +116,11 @@ def list_agents():
                 "name": "societario_specialist", 
                 "specialty": "Direito Societário & Holdings",
                 "capabilities": ["Contratos sociais", "Holdings", "Planejamento sucessório", "Blindagem patrimonial"]
+            },
+            {
+                "name": "tributario_specialist",
+                "specialty": "Direito Tributário",
+                "capabilities": ["Planejamento fiscal", "Defesas fiscais", "Reforma tributária", "Compliance tributário"]
             },
             {
                 "name": "contratos_specialist",

@@ -5,7 +5,7 @@
   "scripts": {
     "build": "next build",
     "dev": "concurrently \"npm run dev:ui\" \"npm run dev:agent\" --names ui,agent --prefix-colors blue,green --kill-others",
-    "dev:agent": ".venv/Scripts/python.exe agent/main.py",
+    "dev:agent": ".venv\\Scripts\\python.exe agent\\main.py",
     "dev:ui": "next dev --turbopack",
     "lint": "next lint",
     "start": "next start",

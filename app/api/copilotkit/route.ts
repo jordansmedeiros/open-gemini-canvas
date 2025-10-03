@@ -1,13 +1,17 @@
 import {
   CopilotRuntime,
   copilotRuntimeNextJSAppRouterEndpoint,
-  GoogleGenerativeAIAdapter,
+  OpenAIAdapter,
   LangGraphAgent
 } from "@copilotkit/runtime";
 import { NextRequest } from "next/server";
  
-// You can use any service adapter here for multi-agent support.
-const serviceAdapter = new GoogleGenerativeAIAdapter();
+// Configure OpenRouter via OpenAI adapter
+const serviceAdapter = new OpenAIAdapter({
+  api_key: process.env.OPENROUTER_API_KEY,
+  baseURL: process.env.OPENROUTER_BASE_URL || "https://openrouter.ai/api/v1",
+  model: process.env.OPENROUTER_MODEL || "google/gemini-2.5-pro",
+});
  
 const runtime = new CopilotRuntime({
   remoteEndpoints : [{

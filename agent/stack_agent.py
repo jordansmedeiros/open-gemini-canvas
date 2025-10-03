@@ -19,7 +19,7 @@ from copilotkit import CopilotKitState
 from copilotkit.langgraph import copilotkit_emit_state
 from copilotkit.langchain import copilotkit_customize_config
 
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
 from langchain_core.tools import tool
 
@@ -390,12 +390,13 @@ async def analyze_with_gemini_node(state: StackAgentState, config: RunnableConfi
         HumanMessage(content=prompt),
     ]
 
-    # 9. Initialize Gemini client for tool call and fallback passes
-    model = ChatGoogleGenerativeAI(
-        model="gemini-2.5-pro",
+    # 9. Initialize OpenRouter client for tool call and fallback passes
+    model = ChatOpenAI(
+        model=os.getenv("OPENROUTER_MODEL", "google/gemini-2.5-pro"),
+        api_key=os.getenv("OPENROUTER_API_KEY"),
+        base_url=os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
         temperature=0.4,
         max_retries=2,
-        google_api_key=os.getenv("GOOGLE_API_KEY"),
     )
 
     pretty: str
@@ -450,11 +451,12 @@ async def analyze_with_gemini_node(state: StackAgentState, config: RunnableConfi
     messages[0].content = "Generate a summary of the GitHub Repository. It should be in a concise and strictly textual"
     
     # 13. Generate a user-facing summary referencing the tool call outcome
-    client = ChatGoogleGenerativeAI(
-        model="gemini-2.5-pro",
+    client = ChatOpenAI(
+        model=os.getenv("OPENROUTER_MODEL", "google/gemini-2.5-pro"),
+        api_key=os.getenv("OPENROUTER_API_KEY"),
+        base_url=os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
         temperature=0.4,
         max_retries=2,
-        google_api_key=os.getenv("GOOGLE_API_KEY"),
     )
     state["tool_logs"].append({"id": str(uuid.uuid4()), "message": "Generating Summary", "status": "processing"})
     await copilotkit_emit_state(config, state)

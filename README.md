@@ -2,10 +2,20 @@
 
 https://github.com/user-attachments/assets/1e95c9e1-2d55-4f63-b805-be49fe94a493
 
-# CopilotKit + Google DeepMind (Gemini) + LangGraph Template
+# CopilotKit + OpenRouter (Gemini) + LangGraph Template
 
-This project showcases how to build practical AI agents with **CopilotKit**, **Google DeepMind’s Gemini**, and **LangGraph**.  
+This project showcases how to build practical AI agents with **CopilotKit**, **OpenRouter** (accessing Google Gemini), and **LangGraph**.  
 It includes two agents, exposed through a **Next.js frontend** and a **FastAPI backend**.
+
+## 🔄 Latest Update: OpenRouter Migration
+
+**📅 Outubro 2025** - O projeto foi migrado para usar **OpenRouter** em vez da API direta do Google Gemini, proporcionando:
+- ✅ **Flexibilidade**: Acesso a múltiplos modelos de IA (Google, OpenAI, Anthropic, etc.)
+- ✅ **Confiabilidade**: Fallback automático entre modelos
+- ✅ **Monitoramento**: Dashboard centralizado de uso e custos
+- ✅ **Escalabilidade**: Melhor gestão de rate limits
+
+📖 **[Ver Guia Completo de Migração](./OPENROUTER_SETUP.md)**
 
 ## ✨ Features
 
